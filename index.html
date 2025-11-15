@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Employee Salary & Attendance System</title>
+   <style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #f2f6ff;
+        font-family: "Poppins", sans-serif;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 30px auto;
+        padding: 20px;
+    }
+
+    h1, h2 {
+        text-align: center;
+        font-weight: 600;
+        color: #1a2a52;
+    }
+
+    /* NAV BUTTONS */
+    #mainNav {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .nav-button {
+        padding: 12px 15px;
+        background: #2962ff;
+        color: white;
+        font-weight: 600;
+        border-radius: 10px;
+        text-align: center;
+        text-decoration: none;
+        transition: 0.2s;
+    }
+
+    .nav-button:hover {
+        background: #0039cb;
+    }
+
+    /* SECTIONS */
+    .section-box {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-top: 20px;
+        box-shadow: 0px 3px 12px rgba(0,0,0,0.1);
+        border: 1px solid #e8e8e8;
+    }
+
+    label {
+        display: block;
+        margin-top: 12px;
+        font-size: 15px;
+        font-weight: 500;
+        color: #1b2d4b;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #cfd7e3;
+        border-radius: 8px;
+        margin-top: 6px;
+        font-size: 16px;
+        background: #f9fbff;
+        outline: none;
+    }
+
+    input:focus, select:focus {
+        border-color: #2962ff;
+        box-shadow: 0px 0px 5px rgba(41,98,255,0.4);
+    }
+
+    input[type="radio"] {
+        width: auto;
+        transform: scale(1.2);
+        margin-right: 5px;
+    }
+
+    /* SAVE BUTTONS */
+    .main-button {
+        margin-top: 15px;
+        width: 100%;
+        padding: 12px 15px;
+        font-size: 17px;
+        font-weight: 600;
+        background: #009688;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .main-button:hover {
+        background: #00796b;
+    }
+
+    /* TABLE */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: #ffffff;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e4e4e4;
+    }
+
+    th, td {
+        padding: 10px 12px;
+        border-bottom: 1px solid #f1f1f1;
+        font-size: 15px;
+        text-align: left;
+    }
+
+    th {
+        background: #e8eefc;
+        font-weight: 600;
+        color: #1a2a52;
+    }
+
+    tr:hover {
+        background: #f7faff;
+    }
+
+    /* STATUS COLORS */
+    .present-status {
+        color: #009500;
+        font-weight: 700;
+    }
+
+    .absent-status {
+        color: #d60000;
+        font-weight: 700;
+    }
+
+    .not-entered-status {
+        color: #ff9800;
+        font-weight: 700;
+    }
+
+    .salary-amount {
+        color: #0044dd;
+        font-weight: 700;
+        font-size: 18px;
+    }
+</style>
+  
+</head>
+<body>
+
+    <div class="container">
+        <h1>🧑‍💻 Employee Salary & Attendance Ledger</h1>
+          <div class="container">
+        <h1>💰 Shop Billing & Ledger System</h1>
+        
+        <div id="mainNav">
+
+            <a href="wallet.html.html" class="nav-button">💰 Shop Billing (Current)</a>
+            <a href="index.html" class="nav-button">💵 Salary System</a>
+        </div>
+
+        <div class="section-box">
+            <h2>💰 Individual Daily Salary Rate</h2>
+            <p>Har Employee ka alag rate set karein.</p>
+
+            <label for="rateEmployeeSelect">Select Employee to Set Rate:</label>
+            <select id="rateEmployeeSelect" onchange="displayCurrentRate()">
+                </select>
+
+            <label for="dailyRateInput">Set Daily Salary Rate (PKR):</label>
+            <input type="number" id="dailyRateInput" value="1000" min="100" step="100">
+            <button onclick="setDailyRate()" class="main-button">Save Rate</button>
+            <p id="rateMessage" style="color: green; margin-top: 10px;">Current Rate: <span id="currentRateDisplay">---</span> PKR</p>
+        </div>
+
+        <div class="section-box">
+            <h2>🗓️ Rozana Hazri Darj Karein</h2>
+            <form id="attendanceEntryForm">
+                <label for="entryDate">Date:</label>
+                <input type="date" id="entryDate" required>
+
+                <label for="employeeSelect">Employee Name:</label>
+                <select id="employeeSelect" required>
+                    </select>
+
+                <label>Entry Status:</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 20px; margin-top: 10px; margin-bottom: 15px; align-items: center;">
+                    
+                    <div style="display: flex; align-items: center;">
+                        <input type="radio" id="presentRadio" name="entryStatus" value="P" checked onclick="toggleTimeInput(true)" style="width: auto; margin-right: 5px;">
+                        <label for="presentRadio" style="display: inline; font-weight: normal; margin: 0;">Present (Hazir) at:</label>
+                        <input type="time" id="inTimeInput" style="width: 150px; margin-left: 10px;" value="09:00">
+                    </div>
+                    
+                    <div style="display: flex; align-items: center;">
+                        <input type="radio" id="absentRadio" name="entryStatus" value="A" onclick="toggleTimeInput(false)" style="width: auto; margin-right: 5px;">
+                        <label for="absentRadio" style="display: inline; font-weight: normal; margin: 0;">Absent (Chutti)</label>
+                    </div>
+                </div>
+                
+                <button type="submit" class="main-button">Save Attendance</button>
+                <p id="attendanceMessage" style="font-weight: bold; margin-top: 15px;"></p>
+            </form>
+        </div>
+
+        <div class="section-box">
+            <h2>📈 Employee Salary Summary & Attendance View</h2>
+            <label for="summaryEmployeeSelect">View Summary for Employee:</label>
+            <select id="summaryEmployeeSelect" onchange="loadEmployeeSummary()">
+                </select>
+            
+            <label for="fromDate">From Date (Start of Salary Period):</label>
+            <input type="date" id="fromDate" onchange="loadEmployeeSummary()">
+            
+            <label for="toDate">To Date (End of Salary Period):</label>
+            <input type="date" id="toDate" onchange="loadEmployeeSummary()">
+            
+            <div id="salarySummaryResult" class="salary-summary" style="margin-top: 20px;">
+                </div>
+            
+            <button onclick="clearAttendanceData()" class="main-button">
+                ⚠️ Clear ALL Attendance Data
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        const ATTENDANCE_KEY = 'employee_attendance_ledger';
+        const EMPLOYEE_RATES_KEY = 'employee_individual_daily_rates'; // NEW KEY
+        
+        const EMPLOYEES = [
+            'Kamran',
+            'Taimur', 
+            'Amir',
+            'Asad', 
+            'Sarfaraz', 
+        ];
+
+        // --- Core Data Functions for Attendance ---
+
+        function getAttendance() {
+            const data = localStorage.getItem(ATTENDANCE_KEY);
+            return data ? JSON.parse(data) : {};
+        }
+
+        function saveAttendance(attendance) {
+            localStorage.setItem(ATTENDANCE_KEY, JSON.stringify(attendance));
+        }
+
+        // --- Core Data Functions for Individual Rates (NEW) ---
+        
+        function getEmployeeRates() {
+            const data = localStorage.getItem(EMPLOYEE_RATES_KEY);
+            let rates = data ? JSON.parse(data) : {};
+            
+            // Ensure all 5 employees have a rate (default 1000)
+            EMPLOYEES.forEach(name => {
+                if (!rates[name] || isNaN(parseFloat(rates[name]))) {
+                    rates[name] = 1000; 
+                }
+            });
+            return rates;
+        }
+
+        function saveEmployeeRates(rates) {
+            localStorage.setItem(EMPLOYEE_RATES_KEY, JSON.stringify(rates));
+        }
+        
+        function setDailyRate() {
+            const selectedEmployee = document.getElementById('rateEmployeeSelect').value;
+            const newRate = parseFloat(document.getElementById('dailyRateInput').value);
+            const rateMessageElement = document.getElementById('rateMessage');
+
+            if (!selectedEmployee || selectedEmployee === '') {
+                rateMessageElement.textContent = `Error: Please select an employee first.`;
+                rateMessageElement.style.color = 'red';
+                return;
+            }
+
+            if (newRate > 0) {
+                let rates = getEmployeeRates();
+                rates[selectedEmployee] = newRate;
+                saveEmployeeRates(rates);
+                
+                rateMessageElement.textContent = `${selectedEmployee} ka Daily Rate ${newRate.toFixed(2)} PKR save ho gaya hai.`;
+                rateMessageElement.style.color = 'green';
+                
+                loadEmployeeSummary(); // Recalculate summary
+                displayCurrentRate(); // Update rate display
+            } else {
+                rateMessageElement.textContent = `Error: Rate 0 se zyada hona chahiye.`;
+                rateMessageElement.style.color = 'red';
+            }
+        }
+        
+        function displayCurrentRate() {
+            const selectedEmployee = document.getElementById('rateEmployeeSelect').value;
+            const rateDisplay = document.getElementById('currentRateDisplay');
+            const rateInput = document.getElementById('dailyRateInput');
+            
+            if (selectedEmployee) {
+                const rates = getEmployeeRates();
+                const rate = rates[selectedEmployee] || 1000;
+                rateDisplay.textContent = rate.toFixed(2);
+                rateInput.value = rate;
+            } else {
+                rateDisplay.textContent = '---';
+                rateInput.value = 1000;
+            }
+            document.getElementById('rateMessage').textContent = '';
+        }
+        
+        
+        function clearAttendanceData() {
+             if (confirm("Khabardar! Kya aap waqai Local Storage se tamaam Hazri aur Salary ka data mitaana chahte hain? Yeh amal wapas nahi liya ja sakta.")) {
+                localStorage.removeItem(ATTENDANCE_KEY);
+                // Note: Employee rates are NOT cleared here, only attendance history.
+                loadEmployeeSummary(); 
+                alert("Tamaam attendance data clear ho gaya hai.");
+            }
+        }
+
+        // --- UI Initialization & Helpers ---
+
+        function populateEmployeeSelects() {
+            const selects = [
+                document.getElementById('employeeSelect'),
+                document.getElementById('summaryEmployeeSelect'),
+                document.getElementById('rateEmployeeSelect') // NEW SELECT
+            ];
+            
+            selects.forEach(select => {
+                select.innerHTML = ''; 
+                
+                // Add default empty option for summary and rate setting
+                if (select.id === 'summaryEmployeeSelect' || select.id === 'rateEmployeeSelect') {
+                    const defaultOption = document.createElement('option');
+                    defaultOption.value = '';
+                    defaultOption.textContent = (select.id === 'rateEmployeeSelect') ? '--- Select Employee to Set Rate ---' : '--- Select Employee ---';
+                    select.appendChild(defaultOption);
+                }
+                
+                EMPLOYEES.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    select.appendChild(option);
+                });
+            });
+            
+             // Set today's date and default start/end dates
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('entryDate').value = today;
+            
+            const fromDate = new Date();
+            fromDate.setDate(fromDate.getDate() - 6); 
+            document.getElementById('fromDate').value = fromDate.toISOString().split('T')[0];
+            document.getElementById('toDate').value = today;
+        }
+
+        function toggleTimeInput(is_present) {
+            document.getElementById('inTimeInput').disabled = !is_present;
+        }
+
+
+        // --- Event Handlers ---
+
+        document.getElementById('attendanceEntryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const date = document.getElementById('entryDate').value;
+            const employee = document.getElementById('employeeSelect').value;
+            const statusType = document.querySelector('input[name="entryStatus"]:checked').value; 
+            
+            if (!employee) {
+                 alert("Please select an employee.");
+                 return;
+            }
+
+            let statusValue = 'N/A';
+            
+            if (statusType === 'P') {
+                const inTime = document.getElementById('inTimeInput').value;
+                if (!inTime) {
+                     alert("Please enter In Time.");
+                     return;
+                }
+                statusValue = inTime; 
+            } else if (statusType === 'A') {
+                statusValue = 'A'; 
+            }
+
+            let attendance = getAttendance();
+            
+            if (!attendance[date]) {
+                attendance[date] = {};
+            }
+            
+            attendance[date][employee] = statusValue;
+            saveAttendance(attendance);
+
+            const messageElement = document.getElementById('attendanceMessage');
+            messageElement.textContent = `${employee} ka status (${statusValue}) ${date} ke liye save ho gaya hai.`;
+            messageElement.style.color = 'green';
+            
+            loadEmployeeSummary();
+        });
+
+        // --- Summary Calculation Function (UPDATED for individual rate) ---
+
+        function loadEmployeeSummary() {
+            const selectedEmployee = document.getElementById('summaryEmployeeSelect').value;
+            const fromDateStr = document.getElementById('fromDate').value;
+            const toDateStr = document.getElementById('toDate').value;
+            const resultDiv = document.getElementById('salarySummaryResult');
+            resultDiv.innerHTML = '';
+            
+            if (!selectedEmployee || !fromDateStr || !toDateStr) {
+                resultDiv.innerHTML = '<p style="color:red;">Barahe meharbani Employee, From Date, aur To Date select karein.</p>';
+                return;
+            }
+
+            const employeeRates = getEmployeeRates();
+            const employeeDailyRate = employeeRates[selectedEmployee] || 1000; // GETTING INDIVIDUAL RATE
+
+            const fromDate = new Date(fromDateStr);
+            const toDate = new Date(toDateStr);
+            toDate.setDate(toDate.getDate() + 1); 
+
+            if (fromDate > toDate) {
+                resultDiv.innerHTML = '<p style="color:red;">Error: "From Date" "To Date" se pehle honi chahiye.</p>';
+                return;
+            }
+
+            const attendanceRecords = getAttendance();
+            let presentDays = 0;
+            let absentDays = 0;
+            let detailRows = '';
+
+            for (let d = new Date(fromDate); d < toDate; d.setDate(d.getDate() + 1)) {
+                const dateStr = d.toISOString().split('T')[0];
+                const dayOfWeek = new Date(dateStr).toLocaleDateString('en-US', { weekday: 'short' });
+                
+                let status = attendanceRecords[dateStr] && attendanceRecords[dateStr][selectedEmployee] 
+                             ? attendanceRecords[dateStr][selectedEmployee] 
+                             : 'N/A';
+
+                let statusText = '';
+                let statusClass = 'not-entered-status';
+                
+                if (status !== 'N/A') {
+                    if (status === 'A') {
+                        statusText = 'Absent (Chutti)';
+                        statusClass = 'absent-status';
+                        absentDays++;
+                    } else {
+                        statusText = `Present (Hazir) at ${status}`;
+                        statusClass = 'present-status';
+                        presentDays++;
+                    }
+                } else {
+                    statusText = 'Not Entered';
+                }
+
+                detailRows += `
+                    <tr>
+                        <td>${dateStr} (${dayOfWeek})</td>
+                        <td class="${statusClass}">${statusText}</td>
+                        <td>${status === 'A' ? 'Yes' : (status === 'N/A' ? '-' : 'No')}</td>
+                    </tr>
+                `;
+            }
+            
+            const totalSalary = presentDays * employeeDailyRate;
+            
+            // Display Results
+            resultDiv.innerHTML = `
+                <h3>Summary for: ${selectedEmployee}</h3>
+                <p>Selected Period: **${fromDateStr}** to **${toDateStr}**</p>
+                <p>Daily Rate: **${employeeDailyRate.toFixed(2)} PKR**</p>
+                <hr>
+                <p>Present Days (Hazir): <span class="present-status">${presentDays}</span> days</p>
+                <p>Absent Days (Chutti): <span class="absent-status">${absentDays}</span> days</p>
+                <p>Total Payable Salary: <span class="salary-amount">${totalSalary.toFixed(2)} PKR</span></p>
+                
+                <h3 style="margin-top: 30px;">Detailed Weekly Attendance (In Time View)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Status / In Time</th>
+                            <th>Is Absent?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${detailRows}
+                    </tbody>
+                </table>
+            `;
+        }
+
+
+        // --- Initialize App ---
+        window.onload = () => {
+            populateEmployeeSelects();
+            // Select the first employee in summary and rate setting for immediate use
+            document.getElementById('summaryEmployeeSelect').selectedIndex = 1; 
+            document.getElementById('rateEmployeeSelect').selectedIndex = 1;
+            
+            document.getElementById('inTimeInput').value = new Date().toTimeString().split(' ')[0].substring(0, 5);
+            
+            displayCurrentRate();
+            loadEmployeeSummary();
+        };
+
+    </script>
+
+</body>
+</html>
